@@ -86,7 +86,10 @@ def output(data, format):
             print('{}: ["{}"]'.format(
                 k, '", "'.join(sorted(names))))
     elif format == 'json':
-        print(json.dumps(data, ensure_ascii=False, indent=4))
+        outd = {}
+        for k in sorted(data.keys()):
+            outd[k] = {'names': data[k]}
+        print(json.dumps(outd, ensure_ascii=False, indent=4))
     else:
         logger.error(
             'Output format "{}" is not defined. Using "plain".'.format(format))

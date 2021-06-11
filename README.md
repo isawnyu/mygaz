@@ -1,5 +1,8 @@
+# mygaz
 
-# Create gazetteer from list of placenames
+A python package of command-line tools designed for creation and maintenance of simple, arbitrary gazetteers. The package uses a simple, ad hoc JSON file format as its default gazetter storage form and intends to provide mechanisms for exporting same to well-known target formats.
+
+## **names2gaz**: create initial gazetteer from a list of placenames
 
 The ```names2gaz``` command-line script is designed to take a list of placenames and turn them into a structured JSON file in which very similar names have been grouped together on the basis of conservative string cleanup (spaces, Unicode normalization forms) and comparison of lowercase versions from which punctuation and spacing have been stripped.
 
@@ -24,7 +27,57 @@ optional arguments:
                         output format (default: json)
 ```
 
-To review the results on the command line, set the output format to "plain":
+The JSON output looks like this (note that spelling errors and typos in the original data are clearly not reconciled):
+
+```json
+{
+    "abdera": {
+        "names": [
+            "Abdera"
+        ]
+    },
+    "abdereitoi": {
+        "names": [
+            "Abdereitoi"
+        ]
+    },
+    "achaia": {
+        "names": [
+            "Achaia?",
+            "Achaia"
+        ]
+    },
+    "aematini": {
+        "names": [
+            "[Ae]matini"
+        ]
+    },
+    "africaproconsularis": {
+        "names": [
+            "Africa Proconsularis",
+            "Africa proconsularis"
+        ]
+    },
+    "agerdenthaliatis": {
+        "names": [
+            "ager Denthaliatis"
+        ]
+    },
+    "agerdenthialitis": {
+        "names": [
+            "ager Denthialitis"
+        ]
+    },
+    "ansienses": {
+        "names": [
+            "An[sienses?]",
+            "Ansienses"
+        ]
+    }
+}
+```
+
+To review the results on the command line in a more compact format, set the output format to "plain":
 
 ```bash
 python scripts/names2gaz.py -o plain ~/placenames.txt
