@@ -2,6 +2,12 @@
 
 A python package of command-line tools designed for creation and maintenance of simple, arbitrary gazetteers. The package uses a simple, ad hoc JSON file format as its default gazetter storage form and intends to provide mechanisms for exporting same to well-known target formats.
 
+## tests
+
+```bash
+nosetests -x -s --nologcapture --with-coverage --cover-erase --cover-html --cover-html-dir=cover --cover-package=mygaz
+```
+
 ## **names2gaz**: create initial gazetteer from a list of placenames
 
 The ```names2gaz``` command-line script is designed to take a list of placenames and turn them into a structured JSON file in which very similar names have been grouped together on the basis of conservative string cleanup (spaces, Unicode normalization forms) and comparison of lowercase versions from which punctuation and spacing have been stripped.
@@ -106,3 +112,6 @@ moesiainferior: ["Moesia (Inferior)", "Moesia Inferior"]
 africa: ["Africa"]
 dion: ["Dion"]
 ```
+## align with Pleiades
+
+Need to make this more nuanced than what the script tries to do right now. Need multiple matching modes, with cli options to mix and match those modes. So, not just match the key, but try to use the individual names in the source gaz (assumes they might have been worked on). Probablyk need to create an aligner class that knows about the different alignable datasets and then subclass that for pleiades.
