@@ -142,3 +142,4 @@ cover
 
 # project-specific
 data/scratch
+data/cache/*.json
