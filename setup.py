@@ -18,6 +18,6 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    install_requires=['airtight', 'pathvalidate', 'python-magic', 'requests', 'regex', 'textnorm'],
+    install_requires=['airtight', 'fuzzywuzzy[speedup]', 'pathvalidate', 'python-magic', 'python-slugify', 'requests', 'regex', 'textnorm'],
     python_requires='>=3.9.5'
 )
