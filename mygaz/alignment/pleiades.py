@@ -91,7 +91,7 @@ class PleiadesAligner(Aligner):
             self._names_index = json.loads(content)
         return self._names_index
 
-    def match_name(self, name_string):
+    def match_name(self, name_string, fuzzy_matching=False):
         ns = normalize_space(normalize_unicode(name_string))
         try:
             m_ns = self.lookups['name_strings'][ns]
@@ -102,12 +102,13 @@ class PleiadesAligner(Aligner):
             m_k = self.lookups['name_keys'][nk]
         except KeyError:
             m_k = []
-        fuzzy = process.extract(ns, list(self.lookups['name_strings'].keys()), limit=5)
-        fuzzy_names = []
-        fuzzy_pids = []
-        for fuz in fuzzy:
-            fuzzy_names.append(fuz[0])
-            fuzzy_pids.extend(self.lookups['name_strings'][fuz[0]])
+        if fuzzy_matching:
+            fuzzy = process.extract(ns, list(self.lookups['name_strings'].keys()), limit=5)
+            fuzzy_names = []
+            fuzzy_pids = []
+            for fuz in fuzzy:
+                fuzzy_names.append(fuz[0])
+                fuzzy_pids.extend(self.lookups['name_strings'][fuz[0]])
         result = {
             'name_string': ns,
             'name_key': nk,
@@ -115,13 +116,14 @@ class PleiadesAligner(Aligner):
                 'consensus': list(set(m_ns).intersection(set(m_k))),
                 'name_strings': m_ns,
                 'name_keys': m_k,
-            },
-            'matches_fuzzy': {
+            }
+        }
+        if fuzzy_matching:
+            result['matches_fuzzy'] = {
                 'name_strings': sorted(list(set(fuzzy_names))),
                 'pids': list(set(fuzzy_pids)),
                 'ratios': fuzzy
             }
-        }
         return result
             
 
