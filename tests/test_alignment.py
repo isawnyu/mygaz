@@ -10,6 +10,7 @@ from mygaz.alignment.pleiades import PleiadesAligner
 from nose.tools import assert_equal, assert_false, assert_true, raises
 import os
 from pathlib import Path
+from pprint import pprint
 import shutil
 from time import mktime
 from unittest import TestCase
@@ -105,3 +106,19 @@ class Test_PleiadesAlignment(TestCase):
         assert_true('name_keys' in a.lookups.keys())
         assert_true('roma' in a.lookups['name_keys'].keys())
         assert_true('Roma' in a.lookups['name_strings'].keys())
+
+    def test_lookup_rome(self):
+        a = self.aligner
+        r = a.match_name('Roma')
+        assert_equal('423025', r['matches']['consensus'][0])
+
+    def test_lookup_apollonia(self):
+        a = self.aligner
+        r = a.match_name('Apollonia')
+        assert_true(len(r['matches']['consensus']) > 10)
+        assert_equal(sorted(r['matches']['consensus']), sorted(r['matches']['name_strings']))
+        assert_equal(sorted(r['matches']['consensus']), sorted(r['matches']['name_keys']))
+    
+    def test_lookup_athenai(self):
+        a = self.aligner
+        r = a.match_name('Ἀθῆναι')

@@ -5,6 +5,7 @@ Align my gaz entries to the Pleiades gazetteer of ancient places
 """
 
 from datetime import datetime, timedelta
+from fuzzywuzzy import process
 import json
 import logging
 
@@ -52,7 +53,8 @@ class PleiadesAligner(Aligner):
                 d[k]
             except KeyError:
                 d[k] = []
-            d[k].append(pid)
+            if pid not in d[k]:
+                d[k].append(pid)
         self.lookups['name_keys'] = d
         content = json.dumps(d, ensure_ascii=False, indent=4, sort_keys=True)
         self._save_to_cache(bytes(content, encoding='utf-8'), file_path)
@@ -75,7 +77,8 @@ class PleiadesAligner(Aligner):
                 d[k]
             except KeyError:
                 d[k] = []
-            d[k].append(pid)
+            if pid not in d[k]:
+                d[k].append(pid)
         self.lookups['name_strings'] = d
         content = json.dumps(d, ensure_ascii=False, indent=4, sort_keys=True)
         self._save_to_cache(bytes(content, encoding='utf-8'), file_path)
@@ -87,5 +90,39 @@ class PleiadesAligner(Aligner):
             content, fetched = self._fetch_file(NAMES_INDEX_URI)
             self._names_index = json.loads(content)
         return self._names_index
+
+    def match_name(self, name_string):
+        ns = normalize_space(normalize_unicode(name_string))
+        try:
+            m_ns = self.lookups['name_strings'][ns]
+        except KeyError:
+            m_ns = []
+        nk = self._make_name_key(name_string)
+        try:
+            m_k = self.lookups['name_keys'][nk]
+        except KeyError:
+            m_k = []
+        fuzzy = process.extract(ns, list(self.lookups['name_strings'].keys()), limit=5)
+        fuzzy_names = []
+        fuzzy_pids = []
+        for fuz in fuzzy:
+            fuzzy_names.append(fuz[0])
+            fuzzy_pids.extend(self.lookups['name_strings'][fuz[0]])
+        result = {
+            'name_string': ns,
+            'name_key': nk,
+            'matches': {
+                'consensus': list(set(m_ns).intersection(set(m_k))),
+                'name_strings': m_ns,
+                'name_keys': m_k,
+            },
+            'matches_fuzzy': {
+                'name_strings': sorted(list(set(fuzzy_names))),
+                'pids': list(set(fuzzy_pids)),
+                'ratios': fuzzy
+            }
+        }
+        return result
+            
 
 
