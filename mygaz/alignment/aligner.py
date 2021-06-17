@@ -46,7 +46,7 @@ class Aligner:
     def _initialize_lookups(self):
         """Initialize lookup indices and tables"""
         for k in self.lookups.keys():
-            getattr(self, '_initialize_lookup_' + k)(rebuild=fetched)
+            getattr(self, '_initialize_lookup_' + k)(rebuild=True)
 
     def _fetch_file(self, uri, cache_override=False, name_override=''):
         """Get a file from cache or web as appropriate"""
