@@ -11,7 +11,6 @@ import os
 from pathlib import Path
 import requests
 
-CACHE_DURATION_DEFAULT = timedelta(hours=24)
 NAMES_INDEX_URI = (
     'https://raw.githubusercontent.com/ryanfb/pleiades-geojson/'
     'gh-pages/name_index.json')
