@@ -99,5 +99,9 @@ class Test_PleiadesAlignment(TestCase):
         del self.aligner
 
     def test_foo(self):
-        pass
-
+        a = self.aligner
+        assert_equal(2, len(a.lookups))
+        assert_true('name_strings' in a.lookups.keys())
+        assert_true('name_keys' in a.lookups.keys())
+        assert_true('roma' in a.lookups['name_keys'].keys())
+        assert_true('Roma' in a.lookups['name_strings'].keys())

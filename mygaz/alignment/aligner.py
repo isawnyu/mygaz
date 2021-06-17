@@ -10,6 +10,8 @@ import os
 from pathlib import Path
 from pathvalidate import sanitize_filename
 import requests
+from slugify import slugify
+from textnorm import normalize_space, normalize_unicode
 from urllib.parse import urlsplit
 
 logger = logging.getLogger(__name__)
@@ -24,10 +26,13 @@ class Aligner:
         cache_duration=CACHE_DURATION_DEFAULT,
         cache_override=False
     ):
-        self.cache_name = __name__.lower().split('.')[-1]
-        self.cache_path = Path(
-            '/'.join(
-                (__file__, '../../../data/cache/', self.cache_name))).resolve()
+        try:
+            self.cache_path
+        except AttributeError:
+            self.cache_name = __name__.lower().split('.')[-1]
+            self.cache_path = Path(
+                '/'.join(
+                    (__file__, '../../../data/cache/', self.cache_name))).resolve()
         self.cache_path.mkdir(parents=True, exist_ok=True)
         self.cache_duration = cache_duration
         self.cache_override = False
@@ -91,5 +96,10 @@ class Aligner:
         del f
         return content
 
-
-    
+    def _make_name_key(self, name_string):
+        n = normalize_unicode(name_string)
+        n = normalize_space(n)
+        k = slugify(n, separator='')
+        if k == '' and name_string != '':
+            k = ''.join(n.lower().split())
+        return k
